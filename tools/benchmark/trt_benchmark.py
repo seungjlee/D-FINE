@@ -8,30 +8,28 @@ import os
 import time
 from collections import OrderedDict, namedtuple
 
+import cuda.cudart as cuda
 import numpy as np
-import pycuda.driver as cuda
 import tensorrt as trt
 import torch
 from dataset import Dataset
 from tqdm import tqdm
 from utils import TimeProfiler
 
-
 def parse_args():
     parser = argparse.ArgumentParser(description="Argument Parser Example")
     parser.add_argument(
         "--infer_dir",
         type=str,
-        default="/data/COCO2017/val2017",
+        default="/Data/COCO/val2017",
         help="Directory for images to perform inference on.",
     )
-    parser.add_argument("--engine_dir", type=str, help="Directory containing model engine files.")
+    parser.add_argument("--engine_dir", type=str, default=".", help="Directory containing model engine files.")
     parser.add_argument(
         "--busy", action="store_true", help="Flag to indicate that other processes may be running."
     )
     args = parser.parse_args()
     return args
-
 
 class TRTInference(object):
     def __init__(

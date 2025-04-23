@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 D-FINE: Redefine Regression Task of DETRs as Fine-grained Distribution Refinement
 Copyright (c) 2024 The D-FINE Authors. All Rights Reserved.
@@ -66,7 +67,7 @@ def main(
         "orig_target_sizes": {0: "N"},
     }
 
-    output_file = args.resume.replace(".pth", ".onnx") if args.resume else "model.onnx"
+    output_file = args.resume.replace(".pth", f"_{args.input_size}x{args.input_size}.onnx") if args.resume else "model.onnx"
 
     torch.onnx.export(
         model,
@@ -106,7 +107,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         "-c",
-        default="configs/dfine/dfine_hgnetv2_l_coco.yml",
+        default="configs/dfine/dfine_hgnetv2_n_coco.yml",
         type=str,
     )
     parser.add_argument(

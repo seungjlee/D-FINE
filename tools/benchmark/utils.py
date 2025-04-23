@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 import numpy as np
 import onnx
-import onnx_graphsurgeon
+#import onnx_graphsurgeon
 import torch
 from PIL import Image
 
@@ -47,10 +47,10 @@ def yolo_insert_nms(
     )
 
     outputs = [
-        onnx_graphsurgeon.Variable("num_dets", np.int32, [-1, 1]),
-        onnx_graphsurgeon.Variable("det_boxes", np.float32, [-1, topk, 4]),
-        onnx_graphsurgeon.Variable("det_scores", np.float32, [-1, topk]),
-        onnx_graphsurgeon.Variable("det_classes", np.int32, [-1, topk]),
+        # onnx_graphsurgeon.Variable("num_dets", np.int32, [-1, 1]),
+        # onnx_graphsurgeon.Variable("det_boxes", np.float32, [-1, topk, 4]),
+        # onnx_graphsurgeon.Variable("det_scores", np.float32, [-1, topk]),
+        # onnx_graphsurgeon.Variable("det_classes", np.int32, [-1, topk]),
     ]
 
     graph.layer(
@@ -64,7 +64,7 @@ def yolo_insert_nms(
     graph.outputs = outputs
     graph.cleanup().toposort()
 
-    onnx.save(onnx_graphsurgeon.export_onnx(graph), "yolo_w_nms.onnx")
+    # onnx.save(onnx_graphsurgeon.export_onnx(graph), "yolo_w_nms.onnx")
 
 
 class TimeProfiler(contextlib.ContextDecorator):
