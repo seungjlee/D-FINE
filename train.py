@@ -8,6 +8,7 @@ Copyright (c) 2023 lyuwenyu. All Rights Reserved.
 
 import os
 import sys
+import time
 import torch
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -62,6 +63,12 @@ def main(args) -> None:
     if args.resume or args.tuning:
         if "HGNetv2" in cfg.yaml_cfg:
             cfg.yaml_cfg["HGNetv2"]["pretrained"] = False
+
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    if cfg.yaml_cfg['output_dir']:
+        cfg.output_dir = os.path.join(cfg.yaml_cfg['output_dir'], timestamp)
+    else:
+        cfg.output_dir = os.path.join("./output", timestamp)
 
     if safe_get_rank() == 0:
         print("cfg: ")
