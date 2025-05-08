@@ -273,6 +273,8 @@ class BaseSolver(object):
         module.load_state_dict(stat, strict=False)
         print(f"Load model.state_dict, {infos}")
 
+        module.encoder.requires_grad_(False)
+
     @staticmethod
     def _matched_state(state: Dict[str, torch.Tensor], params: Dict[str, torch.Tensor]):
         missed_list = []
