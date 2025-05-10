@@ -13,6 +13,7 @@ from ._transforms import (
     RandomHorizontalFlip,
     RandomIoUCrop,
     RandomPhotometricDistort,
+    RandomRotation,
     RandomZoomOut,
     Resize,
     SanitizeBoundingBoxes,

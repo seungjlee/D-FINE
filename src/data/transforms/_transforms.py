@@ -38,6 +38,8 @@ SanitizeBoundingBoxes = register(name="SanitizeBoundingBoxes")(SanitizeBoundingB
 RandomCrop = register()(T.RandomCrop)
 Normalize = register()(T.Normalize)
 
+RandomRotation = register()(T.RandomRotation)
+
 
 @register()
 class EmptyTransform(T.Transform):
