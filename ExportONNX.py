@@ -56,16 +56,10 @@ def main(
 
     model = Model()
 
-    data = torch.rand(32, 3, args.input_size, args.input_size)
+    assert args.batch_size is not None, "Please set batch size for export onnx model."
+    data = torch.rand(args.batch_size, 3, args.input_size, args.input_size)
     size = torch.tensor([[args.input_size, args.input_size]])
     _ = model(data, size)
-
-    dynamic_axes = {
-        "images": {
-            0: "N",
-        },
-        "orig_target_sizes": {0: "N"},
-    }
 
     output_file = args.resume.replace(".pth", f"_{args.input_size}x{args.input_size}.onnx") if args.resume else "model.onnx"
 
@@ -75,7 +69,6 @@ def main(
         output_file,
         input_names=["images", "orig_target_sizes"],
         output_names=["labels", "boxes", "scores"],
-        dynamic_axes=dynamic_axes,
         opset_version=20,
         verbose=False,
         do_constant_folding=True,
@@ -107,8 +100,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config",
         "-c",
-        default="configs/dfine/dfine_hgnetv2_n_coco.yml",
+        default="configs/dfine/dfine_hgnetv2_l_coco.yml",
         type=str,
+    )
+    parser.add_argument(
+        "--batch-size",
+        "-b",
+        default=None,
+        type=int,
     )
     parser.add_argument(
         "--resume",
@@ -128,7 +127,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--simplify",
         action="store_true",
-        default=True,
+        default=False,
     )
     args = parser.parse_args()
     main(args)
