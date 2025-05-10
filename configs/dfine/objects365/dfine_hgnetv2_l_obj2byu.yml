@@ -15,9 +15,9 @@ DFINE:
 HGNetv2:
   name: 'B4'
   return_idx: [1, 2, 3]
-  freeze_stem_only: True
-  freeze_at: 0
-  freeze_norm: True
+  freeze_stem_only: False
+  freeze_at: -1
+  freeze_norm: False
 
 optimizer:
   type: AdamW
@@ -34,14 +34,14 @@ optimizer:
   weight_decay: 0.000125
 
 
-epochs: 160
+epochs: 216
 train_dataloader:
   dataset:
     transforms:
       policy:
-        epoch: 2
+        epoch: 216
   collate_fn:
-    stop_epoch: 152
+    stop_epoch: 200
     ema_restart_decay: 0.9999
     base_size_repeat: 4
 

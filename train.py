@@ -10,6 +10,7 @@ import os
 import sys
 import time
 import torch
+import yaml
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
@@ -73,6 +74,9 @@ def main(args) -> None:
     if safe_get_rank() == 0:
         print("cfg: ")
         pprint(cfg.__dict__)
+        os.makedirs(cfg.output_dir, exist_ok=True)
+        with open(os.path.join(cfg.output_dir, "config.yaml"), "w") as f:
+            yaml.dump(cfg.yaml_cfg, f, default_flow_style=False)
 
     solver = TASKS[cfg.yaml_cfg["task"]](cfg)
 

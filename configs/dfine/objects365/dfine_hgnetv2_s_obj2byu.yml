@@ -6,7 +6,7 @@ __include__: [
   '../include/dfine_hgnetv2.yml',
 ]
 
-output_dir: ./output/dfine_hgnetv2_s_obj2byu
+output_dir: /mnt/Models-xeonep/BYU_2025/D-FINE/dfine_hgnetv2_s_obj2byu
 
 
 DFINE:
@@ -48,19 +48,19 @@ optimizer:
   weight_decay: 0.000125
 
 
-epochs: 64 # Early stop
+epochs: 220 # Early stop
 train_dataloader:
   dataset:
     transforms:
       policy:
-        epoch: 56
+        epoch: 200
   collate_fn:
-    stop_epoch: 56
+    stop_epoch: 200
     ema_restart_decay: 0.9999
     base_size_repeat: 10
 
-ema:
-  warmups: 0
+# ema:
+#   warmups: 0
 
-lr_warmup_scheduler:
-  warmup_duration: 0
+# lr_warmup_scheduler:
+#   warmup_duration: 0
