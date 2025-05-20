@@ -1,0 +1,73 @@
+__include__: [
+  '../../dataset/byu_detection.yml',
+  '../../runtime.yml',
+  '../include/dataloader.yml',
+  '../include/optimizer.yml',
+  '../include/dfine_hgnetv2.yml',
+]
+
+output_dir: /mnt/Models-xeonep/BYU_2025/D-FINE/dfine_hgnetv2_l_obj2byu
+
+
+DFINE:
+  backbone: HGNetv2
+
+HGNetv2:
+  name: 'B4'
+  return_idx: [1, 2, 3]
+  freeze_stem_only: False
+  freeze_at: -1
+  freeze_norm: False
+
+optimizer:
+  type: AdamW
+  params:
+    -
+      params: '^(?=.*backbone)(?!.*norm|bn).*$'
+      lr: 0.0000125
+    -
+      params: '^(?=.*(?:encoder|decoder))(?=.*(?:norm|bn)).*$'
+      weight_decay: 0.
+
+  lr: 0.00025
+  betas: [0.9, 0.999]
+  weight_decay: 0.000125
+
+
+epochs: 216
+train_dataloader:
+  dataset:
+    transforms:
+      ops:
+        - {type: RandomRotation, degrees: [-180, 180]}
+        - {type: RandomHorizontalFlip}
+        - {type: RandomIoUCrop, p: 1.0, min_scale: 0.25, max_scale: 4.0, min_aspect_ratio: 0.8, max_aspect_ratio: 1.2, trials: 50}
+        - {type: SanitizeBoundingBoxes, min_size: 2.0}
+        - {type: RandomPhotometricDistort, p: 0.5}
+        - {type: Resize, size: [512, 512], }
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+        - {type: ConvertBoxes, fmt: 'cxcywh', normalize: True}
+      policy:
+        epoch: 200
+  collate_fn:
+    type: BatchImageCollateFunction
+    base_size: 512
+    base_size_repeat: 4
+    stop_epoch: 200
+    ema_restart_decay: 0.9999
+
+  shuffle: True
+  total_batch_size: 32 # total batch size equals to 32 (4 * 8)
+  num_workers: 4
+
+val_dataloader:
+  dataset:
+    transforms:
+      ops:
+        - {type: Resize, size: [512, 512], }
+        - {type: ConvertPILImage, dtype: 'float32', scale: True}
+  shuffle: False
+  total_batch_size: 32
+  num_workers: 4
+
+eval_spatial_size: [512, 512]
