@@ -61,7 +61,8 @@ def main(
     size = torch.tensor([[args.input_size, args.input_size]])
     _ = model(data, size)
 
-    output_file = args.resume.replace(".pth", f"_{args.input_size}x{args.input_size}.onnx") if args.resume else "model.onnx"
+    output_file = args.resume.replace(".pth", f"_{args.input_size}x{args.input_size}.onnx") if args.resume else f"model_s_{args.input_size}.onnx"
+    print(f"Exporting onnx model to {output_file} ...")
 
     torch.onnx.export(
         model,
