@@ -57,7 +57,7 @@ class DetCriterion(torch.nn.Module):
             losses, Dict[str, Tensor]
         """
         matched = self.matcher(outputs, targets)
-        values = matched["values"]
+        # values = matched["values"]
         indices = matched["indices"]
         # Get device from outputs for distributed all_reduce (must be CUDA for NCCL)
         device = outputs["pred_logits"].device
@@ -160,6 +160,13 @@ class DetCriterion(torch.nn.Module):
         target_boxes = torchvision.ops.box_convert(
             target_boxes, in_fmt=self.box_fmt, out_fmt="xyxy"
         )
+        # Clamp to ensure valid xyxy boxes (x2 >= x1, y2 >= y1) - can happen with extreme predictions
+        src_boxes = torch.stack([
+            src_boxes[:, 0],
+            src_boxes[:, 1],
+            torch.maximum(src_boxes[:, 2], src_boxes[:, 0] + 1e-6),
+            torch.maximum(src_boxes[:, 3], src_boxes[:, 1] + 1e-6),
+        ], dim=1)
         loss_giou = 1 - box_ops.elementwise_generalized_box_iou(src_boxes, target_boxes)
         losses["loss_giou"] = loss_giou.sum() / num_boxes
         return losses
@@ -175,6 +182,13 @@ class DetCriterion(torch.nn.Module):
         target_boxes = torchvision.ops.box_convert(
             target_boxes, in_fmt=self.box_fmt, out_fmt="xyxy"
         )
+        # Clamp to ensure valid xyxy boxes (x2 >= x1, y2 >= y1) - can happen with extreme predictions
+        src_boxes = torch.stack([
+            src_boxes[:, 0],
+            src_boxes[:, 1],
+            torch.maximum(src_boxes[:, 2], src_boxes[:, 0] + 1e-6),
+            torch.maximum(src_boxes[:, 3], src_boxes[:, 1] + 1e-6),
+        ], dim=1)
         loss_giou = 1 - box_ops.elementwise_generalized_box_iou(src_boxes, target_boxes)
         losses["loss_giou"] = loss_giou.sum() / num_boxes
         return losses
