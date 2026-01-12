@@ -52,9 +52,15 @@ def generalized_box_iou(boxes1, boxes2):
     and M = len(boxes2)
     """
     # degenerate boxes gives inf / nan results
-    # so do an early check
-    assert (boxes1[:, 2:] >= boxes1[:, :2]).all()
-    assert (boxes2[:, 2:] >= boxes2[:, :2]).all()
+    # Clamp to ensure x2 >= x1 and y2 >= y1 (can happen during early training)
+    # Use non-inplace operations to preserve autograd graph
+    boxes1_xy = boxes1[:, :2]
+    boxes1_wh = torch.max(boxes1[:, 2:], boxes1[:, :2] + 1e-6)
+    boxes1 = torch.cat([boxes1_xy, boxes1_wh], dim=-1)
+
+    boxes2_xy = boxes2[:, :2]
+    boxes2_wh = torch.max(boxes2[:, 2:], boxes2[:, :2] + 1e-6)
+    boxes2 = torch.cat([boxes2_xy, boxes2_wh], dim=-1)
     iou, union = box_iou(boxes1, boxes2)
 
     lt = torch.min(boxes1[:, None, :2], boxes2[:, :2])
