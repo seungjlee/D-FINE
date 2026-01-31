@@ -282,12 +282,17 @@ Cost = λ_cls × cost_class + λ_box × cost_bbox + λ_giou × cost_giou
 
 ## Comparison with Other Detectors
 
-| Model | Type | NMS-Free | AP (COCO) | Latency |
-|:------|:-----|:--------:|:---------:|:-------:|
-| YOLO v10-S | CNN | ✓ | 46.3 | 2.5ms |
-| RT-DETR-R50 | Transformer | ✓ | 53.1 | 4.6ms |
-| **D-FINE-S** | Transformer | ✓ | **48.5** | **3.5ms** |
-| **D-FINE-L** | Transformer | ✓ | **54.0** | **5.6ms** |
+| Model | Type | Params | NMS-Free | AP (COCO) | Latency (T4) |
+|:------|:-----|:------:|:--------:|:---------:|:------------:|
+| YOLO v10-N | CNN + PSA | 2.3M | ✓ | 38.5 | 1.8ms |
+| YOLO v11-N | CNN + C2PSA | 2.6M | ✓ | 39.5 | 1.5ms |
+| **D-FINE-N** | CNN + Transformer | **4M** | ✓ | **42.8** | **2.6ms** |
+| YOLO v10-S | CNN + PSA | 7.2M | ✓ | 46.3 | 2.5ms |
+| YOLO v11-S | CNN + C2PSA | 9.4M | ✓ | 47.0 | 2.5ms |
+| **D-FINE-S** | CNN + Transformer | **10M** | ✓ | **48.5** | **3.5ms** |
+| RT-DETR-R18 | CNN + Transformer | 20M | ✓ | 46.5 | 4.6ms |
+| RT-DETR-R50 | CNN + Transformer | 42M | ✓ | 53.1 | 4.6ms |
+| **D-FINE-L** | CNN + Transformer | **31M** | ✓ | **54.0** | **5.6ms** |
 
 > D-FINE achieves better accuracy-latency trade-off than both YOLO and RT-DETR families.
 
